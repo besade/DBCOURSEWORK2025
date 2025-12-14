@@ -2,15 +2,11 @@
 
 WORKDIR /app
 
-COPY src/*.sln . 
-COPY src/Shop/Shop.csproj ./Shop/
+COPY src/ .
 
 RUN dotnet restore Shop.sln
 
-COPY src/Shop/ ./Shop/
-
-WORKDIR /app/Shop 
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish Shop.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 
