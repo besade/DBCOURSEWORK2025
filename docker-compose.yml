@@ -3,14 +3,15 @@
 services:
   shop_app:
     build:
-      context: . 
+      context: .  
       dockerfile: Dockerfile
     
     ports:
       - "8080:80"
     
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
       
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5433;Database=Sweet_Shop;Username=postgres;Password=12345
@@ -28,6 +29,14 @@ services:
       POSTGRES_PASSWORD: 12345
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d Sweet_Shop"]
+      interval: 5s  
+      timeout: 5s  
+      retries: 10  
+      start_period: 10s 
+      
     restart: always
 
 volumes:
