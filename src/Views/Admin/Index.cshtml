@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h1 class="display-4 text-primary">Admin Panel</h1>
+        <hr />
+        <p class="lead">Welcome, Admin! Here you can manage shop data.</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-success">Manage Products</h5>
+                <p class="card-text">Adding, editing and deleting products.</p>
+                <a asp-controller="Admin" asp-action="ManageProducts" class="btn btn-success">Go</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-info">Manage Categories</h5>
+                <p class="card-text">Adding, editing and deleting categories.</p>
+                <a asp-controller="Admin" asp-action="ManageCategories" class="btn btn-info">Go</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-warning">Manage Orders</h5>
+                <p class="card-text">View all orders and update status.</p>
+                <a asp-controller="Admin" asp-action="ManageOrders" class="btn btn-warning text-white">Go</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+﻿@model Shop.Models.Category
+@{
+    ViewData["Title"] = "Delete Category Confirmation";
+}
+
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Confirm Category Deletion!</h4>
+    <p>You are about to PERMANENTLY DELETE the following category. Are you sure?</p>
+    <hr>
+    <p class="mb-0">This action cannot be undone.</p>
+</div>
+
+<h2 class="mt-4">Category Information</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Category ID</dt>
+    <dd class="col-sm-9">@Model.CategoryId</dd>
+
+    <dt class="col-sm-3">Category Name</dt>
+    <dd class="col-sm-9">@Model.CategoryName</dd>
+</dl>
+
+<hr />
+
+<form asp-action="DeleteCategory" method="post">
+
+    <input type="hidden" asp-for="CategoryId" />
+
+    <button type="submit" class="btn btn-danger btn-lg me-3">
+        <i class="bi bi-trash"></i> Confirm Deletion
+    </button>
+    <a asp-action="ManageCategories" class="btn btn-secondary btn-lg">Cancel</a>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.js"></script>
+}

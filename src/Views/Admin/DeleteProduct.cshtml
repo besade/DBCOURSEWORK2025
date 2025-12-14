@@ -1,0 +1,54 @@
+﻿@model Shop.Models.Product
+@{
+    ViewData["Title"] = "Delete Product Confirmation";
+}
+
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Confirm Product Deletion!</h4>
+    <p>You are about to **permanently delete** the product named: **@Model.ProductName**.</p>
+    <p>Are you absolutely sure you want to proceed?</p>
+    <hr>
+    <p class="mb-0">This action cannot be undone.</p>
+</div>
+
+<h2 class="mt-4">Product Information</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Product ID</dt>
+    <dd class="col-sm-9">@Model.ProductId</dd>
+
+    <dt class="col-sm-3">Name</dt>
+    <dd class="col-sm-9">@Model.ProductName</dd>
+
+    <dt class="col-sm-3">Price</dt>
+    <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+
+    <dt class="col-sm-3">Stock Quantity</dt>
+    <dd class="col-sm-9">@Model.StockQuantity pcs.</dd>
+
+    <dt class="col-sm-3">Category ID</dt>
+    <dd class="col-sm-9">@Model.CategoryId</dd>
+
+    @if (Model.Picture != null && Model.Picture.Length > 0)
+    {
+        <dt class="col-sm-3">Picture</dt>
+        <dd class="col-sm-9">
+            <img src="data:image;base64,@Convert.ToBase64String(Model.Picture)" style="max-width: 150px; height: auto;" alt="@Model.ProductName" />
+        </dd>
+    }
+</dl>
+
+<hr />
+
+<form asp-action="DeleteProduct" method="post">
+    <input type="hidden" name="id" value="@Model.ProductId" />
+
+    <button type="submit" class="btn btn-danger btn-lg me-3">
+        <i class="bi bi-trash"></i> Confirm Deletion
+    </button>
+    <a asp-action="ManageProducts" class="btn btn-secondary btn-lg">Cancel</a>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.js"></script>
+}

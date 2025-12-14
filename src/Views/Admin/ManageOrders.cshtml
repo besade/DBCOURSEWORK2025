@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Shop.Models.Order>
+@{
+    ViewData["Title"] = "Manage Orders"; Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2>Orders Management</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.OrderDate</td>
+                    <td>@order.Customer.Email</td>
+                    <td>@order.OrderItems.Sum(x => x.Quantity * x.UnitPrice).ToString("C", new System.Globalization.CultureInfo("uk-UA"))</td>
+                    <td>
+                        <form asp-action="UpdateStatus" method="post" class="d-flex">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <select name="orderStatus" class="form-select form-select-sm me-2"
+                                    asp-items="Html.GetEnumSelectList<Shop.Models.Status>()"
+                                    asp-for="@order.OrderStatus">
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                        </form>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">Items: @order.OrderItems.Count</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

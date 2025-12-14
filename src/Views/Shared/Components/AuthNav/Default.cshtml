@@ -1,0 +1,46 @@
+﻿@model Customer
+
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link text-dark position-relative" asp-controller="Cart" asp-action="Index" title="Cart">
+            <i class="bi bi-bag-fill" style="font-size: 1.5rem;"></i>
+        </a>
+    </li>
+    @if (Model == null)
+    {
+        // User is not logged
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="authDropdown"
+               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Login / Register
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
+                <li><a class="dropdown-item" href="/Auth/Login">Login</a></li>
+                <li><a class="dropdown-item" href="/Auth/Register">Register</a></li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        // User is logged
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown"
+               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @Model.FirstName
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                @if (Model.IsAdmin == true)
+                {
+                    <li><a class="dropdown-item text-danger fw-bold" href="/Admin/Index">Admin Panel</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                }
+                @if (Model.IsAdmin == false)
+                {
+                    <li><a class="dropdown-item" href="/Account/Profile">Profile</a></li>
+                }
+
+                <li><a class="dropdown-item" href="/Account/Logout">Logout</a></li>
+            </ul>
+        </li>
+    }
+</ul>

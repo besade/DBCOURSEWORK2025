@@ -1,0 +1,30 @@
+﻿@model Shop.DTOs.RegisterDto
+
+<h2>Register</h2>
+
+<form method="post">
+    <label>First Name</label>
+    <input asp-for="FirstName" class="form-control" />
+
+    <label>Last Name</label>
+    <input asp-for="LastName" class="form-control" />
+
+    <label>Email</label>
+    <input asp-for="Email" class="form-control" />
+
+    <label>Phone Number</label>
+    <input asp-for="PhoneNumber" class="form-control" />
+
+    <label>Date of Birth</label>
+    <input asp-for="DateOfBirth" type="date" class="form-control" />
+
+    <label>Password</label>
+    <input asp-for="Password" type="password" class="form-control" />
+
+    <button class="btn btn-primary mt-3">Ok</button>
+
+    @if (ViewBag.Error != null)
+    {
+        <p class="text-danger">@ViewBag.Error</p>
+    }
+</form>

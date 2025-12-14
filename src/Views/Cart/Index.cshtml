@@ -1,0 +1,110 @@
+﻿@model Shop.Models.Cart
+
+@{
+    ViewData["Title"] = "Your Shopping Cart";
+    decimal total = 0;
+}
+
+<div class="container my-5">
+    <h1 class="mb-4">Shopping Cart</h1>
+
+    @if (Model == null || !Model.CartItems.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            Your cart is empty! <a asp-controller="Home" asp-action="Index">Continue Shopping</a>
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th class="text-center" style="width: 150px;">Quantity</th>
+                    <th class="text-end" style="width: 120px;">Price</th>
+                    <th class="text-end" style="width: 120px;">Subtotal</th>
+                    <th style="width: 80px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CartItems)
+                {
+                    var maxStock = item.Product.StockQuantity;
+                    var isMaxQuantity = item.Quantity >= maxStock;
+
+                    var subtotal = item.Quantity * item.Product.Price;
+                    total += subtotal;
+
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="ms-3">@item.Product.ProductName</span>
+                                @if (item.Quantity >= maxStock)
+                                {
+                                    <span class="badge bg-warning text-dark ms-2">Max Stock Reached (@maxStock)</span>
+                                }
+                                else if (maxStock < 5)
+                                {
+                                    <span class="badge bg-danger ms-2">Low Stock: @maxStock left</span>
+                                }
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center align-items-center">
+
+                                <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-inline">
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                    @(item.Quantity <= 1 ? "disabled" : "")>
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                </form>
+
+                                <input type="number"
+                                       value="@item.Quantity"
+                                       class="form-control form-control-sm text-center mx-1"
+                                       style="width: 60px;"
+                                       readonly />
+
+                                <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-inline">
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                    @(isMaxQuantity ? "disabled" : "")>
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                        <td class="text-end">@item.Product.Price.ToString("C", new System.Globalization.CultureInfo("uk-UA"))</td>
+                        <td class="text-end">@subtotal.ToString("C", new System.Globalization.CultureInfo("uk-UA"))</td>
+                        <td>
+                            <form asp-controller="Cart" asp-action="RemoveFromCart" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold">Total:</td>
+                    <td class="text-end fw-bold">@total.ToString("C", new System.Globalization.CultureInfo("uk-UA"))</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="d-flex justify-content-end">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">Continue Shopping</a>
+            <a asp-controller="Checkout" asp-action="Index" class="btn btn-success">Make Order</a>
+        </div>
+    }
+</div>

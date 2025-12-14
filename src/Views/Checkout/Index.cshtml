@@ -1,0 +1,33 @@
+﻿@model Shop.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container mt-5">
+    <h2>Checkout</h2>
+    <form asp-action="Index" method="post">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Recipient First Name</label>
+                <input asp-for="RecipientFirstName" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Recipient Last Name</label>
+                <input asp-for="RecipientLastName" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mb-3 form-check">
+            <input asp-for="CustomerIsRecipient" class="form-check-input" />
+            <label class="form-check-label">I am the recipient</label>
+        </div>
+
+        <div class="mb-3">
+            <label>Delivery Method</label>
+            <select asp-for="Delivery" class="form-control" asp-items="Html.GetEnumSelectList<Shop.Models.DeliveryType>()"></select>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg">Confirm Order</button>
+    </form>
+</div>
