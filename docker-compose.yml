@@ -10,7 +10,7 @@ services:
       - "8080:80"
     
     depends_on:
-      postgres_db
+      - postgres_db
 
     command: /bin/bash -c "sleep 15 && dotnet Shop.dll"
       
