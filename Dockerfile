@@ -1,13 +1,15 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-WORKDIR /src
+WORKDIR /app
 
-COPY src/ src/
+COPY src/*.sln . 
+COPY src/Shop/Shop.csproj ./Shop/
 
-RUN dotnet restore src/Shop.sln
+RUN dotnet restore Shop.sln
 
-WORKDIR /src/src/Shop
+COPY src/Shop/ ./Shop/
 
+WORKDIR /app/Shop 
 RUN dotnet publish -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
