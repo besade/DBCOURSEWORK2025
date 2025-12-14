@@ -16,7 +16,7 @@ services:
     command: /bin/bash -c "dotnet Shop.dll"
       
     environment:
-      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5433;Database=Sweet_Shop;Username=postgres;Password=12345
+      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=Sweet_Shop;Username=postgres;Password=12345
       - ASPNETCORE_ENVIRONMENT=Production
       
     restart: on-failure
@@ -24,7 +24,7 @@ services:
   postgres_db:
     image: postgres:15-alpine
     ports:
-      - "5433:5433" 
+      - "5432:5432" 
     environment:
       POSTGRES_DB: Sweet_Shop
       POSTGRES_USER: postgres
