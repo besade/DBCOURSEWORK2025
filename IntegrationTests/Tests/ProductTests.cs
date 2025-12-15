@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Shop.Models;
@@ -15,6 +16,13 @@ namespace Shop.IntegrationTests
         private byte[] CreateMinimalImageBytes()
         {
             return new byte[] { 0x01 };
+        }
+
+        private static void CreatePasswordHash(string password, out byte[] hash, out byte[] salt)
+        {
+            using var hmac = new HMACSHA512();
+            salt = hmac.Key;
+            hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
 
         [Fact]
@@ -51,14 +59,19 @@ namespace Shop.IntegrationTests
         [Fact]
         public async Task AddOrder_Should_Link_To_Customer()
         {
+            string password = "StrongPassword123";
+            CreatePasswordHash(password, out var hash, out var salt);
+
             var user = new Customer
             {
                 FirstName = "Test",
                 LastName = "User",
                 Email = "testuser@gmail.com",
                 PhoneNumber = "380639991199",
-                DateOfBirth = new DateOnly(2000, 1, 1)
-            };
+                DateOfBirth = new DateOnly(2000, 1, 1),
+                PasswordHash = hash,
+                PasswordSalt = salt
+            }
             Context.Customers.Add(user);
             await Context.SaveChangesAsync();
 
