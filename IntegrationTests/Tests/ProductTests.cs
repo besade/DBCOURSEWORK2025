@@ -71,7 +71,7 @@ namespace Shop.IntegrationTests
                 DateOfBirth = new DateOnly(2000, 1, 1),
                 PasswordHash = hash,
                 PasswordSalt = salt
-            }
+            };
             Context.Customers.Add(user);
             await Context.SaveChangesAsync();
 
