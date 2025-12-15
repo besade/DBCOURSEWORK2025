@@ -78,7 +78,10 @@ namespace Shop.IntegrationTests
             var order = new Order
             {
                 CustomerId = user.CustomerId,
-                OrderDate = DateOnly.FromDateTime(DateTime.Today)
+                OrderDate = DateOnly.FromDateTime(DateTime.Today),
+                RecipientFirstName = "Test",
+                RecipientLastName = "User",
+                CustomerIsRecipient = true
             };
             Context.Orders.Add(order);
             await Context.SaveChangesAsync();
