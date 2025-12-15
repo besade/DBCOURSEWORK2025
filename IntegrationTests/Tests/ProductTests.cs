@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Text;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Shop.Models;
 using Xunit;
@@ -9,6 +10,11 @@ namespace Shop.IntegrationTests
     {
         public ProductTests(SharedDatabaseFixture fixture) : base(fixture)
         {
+        }
+
+        private byte[] CreateMinimalImageBytes()
+        {
+            return new byte[] { 0x01 };
         }
 
         [Fact]
@@ -24,7 +30,8 @@ namespace Shop.IntegrationTests
                 Price = 120,
                 ProductCountry = "Ukraine",
                 StockQuantity = 100,
-                Weight = 1
+                Weight = 1,
+                Picture = CreateMinimalImageBytes()
             };
 
             product.CategoryId = category.CategoryId;
