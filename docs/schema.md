@@ -2,7 +2,7 @@
 
 ## **ER Діаграма**
 
-![ERD](.\images\ER_DiagramDB.png)
+![ERD](./images/ER_DiagramDB.png)
 
 ## **Опис ENUM-ів**
 
