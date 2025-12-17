@@ -151,4 +151,39 @@ public class AdminService : IAdminService
             await _db.SaveChangesAsync();
         }
     }
+
+    public async Task<IEnumerable<CategorySalesDto>> GetSalesByCategoryAsync()
+    {
+        return await _db.OrderItems
+            .Include(oi => oi.Product)
+            .ThenInclude(p => p.Category)
+            .Include(oi => oi.Orders)
+            .Where(oi => oi.Orders.OrderStatus == Status.Success)
+            .GroupBy(oi => oi.Product.Category.CategoryName)
+            .Select(g => new CategorySalesDto
+            {
+                CategoryName = g.Key,
+                TotalQuantitySold = g.Sum(x => x.Quantity),
+                TotalRevenue = g.Sum(x => x.Quantity * x.UnitPrice)
+            })
+            .OrderByDescending(x => x.TotalRevenue)
+            .ToListAsync();
+    }
+    public async Task<IEnumerable<CustomerSpendingDto>> GetTopSpendingCustomersAsync()
+    {
+        return await _db.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.OrderItems)
+            .Where(o => o.OrderStatus == Status.Success)
+            .GroupBy(o => o.Customer.Email)
+            .Select(g => new CustomerSpendingDto
+            {
+                Email = g.Key,
+                OrdersCount = g.Count(),
+                TotalSpent = g.Sum(o => o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice))
+            })
+            .Where(x => x.TotalSpent > 1000)
+            .OrderByDescending(x => x.TotalSpent)
+            .ToListAsync();
+    }
 }

@@ -221,6 +221,10 @@ namespace Shop.Controllers
         public async Task<IActionResult> ManageOrders()
         {
             var orders = await _orderService.GetAllOrdersAsync();
+
+            ViewBag.CategorySales = await _adminService.GetSalesByCategoryAsync();
+            ViewBag.TopCustomers = await _adminService.GetTopSpendingCustomersAsync();
+
             return View(orders);
         }
 

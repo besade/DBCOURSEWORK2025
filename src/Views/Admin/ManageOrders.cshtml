@@ -1,8 +1,45 @@
-﻿@model IEnumerable<Shop.Models.Order>
+﻿@using Shop.DTOs
+@model IEnumerable<Shop.Models.Order>
 @{
     ViewData["Title"] = "Manage Orders"; Layout = "_Layout";
 }
+<div class="row mb-5">
+    <div class="col-md-6">
+        <h4>Sales by Category</h4>
+        <table class="table table-sm border">
+            <thead class="table-dark">
+                <tr>
+                    <th>Category</th>
+                    <th>Quantity Sold</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in (IEnumerable<CategorySalesDto>)ViewBag.CategorySales)
+                {
+                    <tr>
+                        <td>@item.CategoryName</td>
+                        <td>@item.TotalQuantitySold</td>
+                        <td>@item.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("uk-UA"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
+    <div class="col-md-6">
+        <h4>VIP Customers (> 1000₴)</h4>
+        <ul class="list-group">
+            @foreach (var cust in (IEnumerable<CustomerSpendingDto>)ViewBag.TopCustomers)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @cust.Email
+                    <span class="badge bg-success rounded-pill">@cust.TotalSpent.ToString("C", new System.Globalization.CultureInfo("uk-UA"))</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
 <div class="container mt-4">
     <h2>Orders Management</h2>
     <table class="table table-striped">

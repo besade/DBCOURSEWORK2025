@@ -20,5 +20,9 @@ namespace Shop.Services
         Task UpdateCategoryAsync(int id, CategoryDto dto);
         Task DeleteCategoryAsync(int id);
         Task RestoreCategoryAsync(int id);
+
+        // Analytics
+        Task<IEnumerable<CategorySalesDto>> GetSalesByCategoryAsync();
+        Task<IEnumerable<CustomerSpendingDto>> GetTopSpendingCustomersAsync();
     }
 }
