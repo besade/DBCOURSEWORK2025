@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Shop.Models;
 using Shop.Services;
 using Shop.ViewModels;
@@ -18,28 +19,26 @@ namespace Shop.Controllers
             _cartService = cartService;
         }
 
-        public async Task<IActionResult> Index(int? categoryId)
+        public async Task<IActionResult> Index(int? categoryId, int page = 1)
         {
+            int pageSize = 6;
+            if (page < 1) page = 1;
+
             var categories = await _productService.GetAllActiveCategoriesAsync();
 
-            var allProducts = await _productService.GetAllActiveProductsAsync();
-
-            var filteredProducts = allProducts;
-            if (categoryId.HasValue && categoryId.Value > 0)
-            {
-                filteredProducts = allProducts.Where(p => p.CategoryId == categoryId.Value).ToList();
-            }
+            var (products, totalCount) = await _productService.GetPagedProductsAsync(categoryId, page, pageSize);
 
             var viewModel = new HomeIndexViewModel
             {
-                Products = filteredProducts,
-                Categories = categories
+                Products = products,
+                Categories = categories,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
+                SelectedCategoryId = categoryId
             };
 
             ViewBag.CurrentCategoryId = categoryId;
-
-            var cartContents = await _cartService.GetCartContentsAsync();
-            ViewBag.CartContents = cartContents;
+            ViewBag.CartContents = await _cartService.GetCartContentsAsync();
 
             return View(viewModel);
         }

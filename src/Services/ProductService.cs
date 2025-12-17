@@ -17,12 +17,26 @@ public class ProductService : IProductService
         return await _db.Products.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Product>> GetAllActiveProductsAsync()
+    public async Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsAsync(int? categoryId, int pageNumber, int pageSize)
     {
-        return await _db.Products
+        var query = _db.Products
             .Include(p => p.Category)
-            .Where(p => p.isDeleted == false)
+            .Where(p => p.isDeleted == false);
+
+        if (categoryId.HasValue && categoryId.Value > 0)
+        {
+            query = query.Where(p => p.CategoryId == categoryId.Value);
+        }
+
+        int totalCount = await query.CountAsync();
+
+        var products = await query
+            .OrderBy(p => p.ProductId) 
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return (products, totalCount);
     }
 
     public async Task<IEnumerable<Category>> GetAllActiveCategoriesAsync()

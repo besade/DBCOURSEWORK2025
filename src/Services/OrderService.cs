@@ -51,7 +51,6 @@ namespace Shop.Services
             }
 
             _db.Orders.Add(order);
-            await _db.SaveChangesAsync();
 
             var cart = await _db.Carts.Include(c => c.CartItems)
                 .FirstOrDefaultAsync(c => c.CustomerId == customerId);
@@ -59,8 +58,8 @@ namespace Shop.Services
             if (cart != null)
             {
                 _db.CartItems.RemoveRange(cart.CartItems);
-                await _db.SaveChangesAsync();
             }
+            await _db.SaveChangesAsync();
         }
         public async Task<List<Order>> GetUserOrdersAsync(int customerId)
         {
