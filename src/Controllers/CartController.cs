@@ -1,66 +1,79 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Services;
-using System.Threading.Tasks;
+using System;
 
-namespace Shop.Controllers
+public class CartController : Controller
 {
-    public class CartController : Controller
+    private readonly ICartService _cartService;
+
+    public CartController(ICartService cartService)
     {
-        private readonly ICartService _cartService;
+        _cartService = cartService;
+    }
 
-        public CartController(ICartService cartService)
+    private int GetCurrentCustomerId()
+    {
+        var userIdString = Request.Cookies["userId"];
+
+        if (int.TryParse(userIdString, out int userId))
+            return userId;
+
+        return 0;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        int userId = GetCurrentCustomerId();
+        if (userId == 0) return RedirectToAction("Login", "Auth");
+
+        var cart = await _cartService.GetCartAsync(userId);
+        return View(cart);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddToCart(int id, int quantity = 1, string? returnUrl = null)
+    {
+        int userId = GetCurrentCustomerId();
+
+        if (userId == 0)
+            return RedirectToAction("Login", "Auth", new { returnUrl });
+
+        if (id > 0 && quantity > 0)
         {
-            _cartService = cartService;
+            await _cartService.AddItemAsync(userId, id, quantity);
         }
 
-        public async Task<IActionResult> Index()
+        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
         {
-            var cart = await _cartService.GetCartAsync();
-            return View(cart);
+            return Redirect(returnUrl);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddToCart(int id, int quantity = 1, string? returnUrl = null)
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateQuantity(int productId, int quantity)
+    {
+        int userId = GetCurrentCustomerId();
+
+        if (productId > 0)
         {
-            if (id > 0 && quantity > 0)
-            {
-                try
-                {
-                    await _cartService.AddItemAsync(id, quantity);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    return RedirectToAction("Login", "Auth", new { returnUrl = returnUrl });
-                }
-            }
-
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-
-            return RedirectToAction("Index", "Home");
+            await _cartService.UpdateQuantityAsync(userId, productId, quantity);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateQuantity(int productId, int quantity)
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RemoveFromCart(int productId)
+    {
+        int userId = GetCurrentCustomerId();
+
+        if (productId > 0)
         {
-            if (productId > 0)
-            {
-                await _cartService.UpdateQuantityAsync(productId, quantity);
-            }
-            return RedirectToAction(nameof(Index));
+            await _cartService.RemoveItemAsync(userId, productId);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RemoveFromCart(int productId)
-        {
-            if (productId > 0)
-            {
-                await _cartService.RemoveItemAsync(productId);
-            }
-            return RedirectToAction(nameof(Index));
-        }
+        return RedirectToAction(nameof(Index));
     }
 }

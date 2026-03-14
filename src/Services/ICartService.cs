@@ -4,11 +4,11 @@ namespace Shop.Services
 {
     public interface ICartService
     {
-        Task AddItemAsync(int productId, int quantity);
-        Task RemoveItemAsync(int productId);
-        Task UpdateQuantityAsync(int productId, int quantity);
-        Task<int> GetCartItemCountAsync();
-        Task<Dictionary<int, int>> GetCartContentsAsync();
-        Task<Cart?> GetCartAsync();
+        Task AddItemAsync(int customerId, int productId, int quantity);
+        Task RemoveItemAsync(int customerId, int productId);
+        Task UpdateQuantityAsync(int customerId, int productId, int quantity);
+        Task<int> GetCartItemCountAsync(int customerId);
+        Task<Dictionary<int, int>> GetCartContentsAsync(int customerId);
+        Task<Cart?> GetCartAsync(int customerId);
     }
 }

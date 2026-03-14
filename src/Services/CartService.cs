@@ -6,41 +6,21 @@ using Shop.Services;
 public class CartService : ICartService
 {
     private readonly ApplicationDbContext _db;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CartService(ApplicationDbContext db, IHttpContextAccessor httpContextAccessor)
+    public CartService(ApplicationDbContext db)
     {
         _db = db;
-        _httpContextAccessor = httpContextAccessor;
     }
 
-    private int GetCurrentCustomerId()
+    public async Task AddItemAsync(int customerId, int productId, int quantity)
     {
-        var userIdString = _httpContextAccessor.HttpContext?.Request.Cookies["userId"];
-
-        if (int.TryParse(userIdString, out int userId))
-        {
-            return userId;
-        }
-
-        return 0;
-    }
-
-    public async Task AddItemAsync(int productId, int quantity)
-    {
-        int userId = GetCurrentCustomerId();
-        if (userId == 0)
-        {
-            throw new UnauthorizedAccessException("User must be logged in to modify the cart.");
-        }
-
         var cart = await _db.Carts
             .Include(c => c.CartItems)
-            .FirstOrDefaultAsync(c => c.CustomerId == userId);
+            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
         if (cart == null)
         {
-            cart = new Cart { CustomerId = userId };
+            cart = new Cart { CustomerId = customerId };
             _db.Carts.Add(cart);
             await _db.SaveChangesAsync();
         }
@@ -65,40 +45,33 @@ public class CartService : ICartService
         await _db.SaveChangesAsync();
     }
 
-    public async Task<int> GetCartItemCountAsync()
+    public async Task<int> GetCartItemCountAsync(int customerId)
     {
-        int userId = GetCurrentCustomerId();
-        if (userId == 0) return 0;
-
         var cart = await _db.Carts
             .Include(c => c.CartItems)
-            .FirstOrDefaultAsync(c => c.CustomerId == userId);
+            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
         return cart?.CartItems.Sum(i => i.Quantity) ?? 0;
     }
 
-    public async Task<Cart?> GetCartAsync()
+    public async Task<Cart?> GetCartAsync(int customerId)
     {
-        int userId = GetCurrentCustomerId();
-        if (userId == 0) return null;
-
         return await _db.Carts
             .Include(c => c.CartItems)
             .ThenInclude(i => i.Product)
-            .FirstOrDefaultAsync(c => c.CustomerId == userId);
+            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
     }
-    public async Task RemoveItemAsync(int productId)
-    {
-        int userId = GetCurrentCustomerId();
-        if (userId == 0) return;
 
+    public async Task RemoveItemAsync(int customerId, int productId)
+    {
         var cart = await _db.Carts
             .Include(c => c.CartItems)
-            .FirstOrDefaultAsync(c => c.CustomerId == userId);
+            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
         if (cart != null)
         {
             var cartItem = cart.CartItems.FirstOrDefault(i => i.ProductId == productId);
+
             if (cartItem != null)
             {
                 _db.CartItems.Remove(cartItem);
@@ -107,14 +80,11 @@ public class CartService : ICartService
         }
     }
 
-    public async Task UpdateQuantityAsync(int productId, int quantity)
+    public async Task UpdateQuantityAsync(int customerId, int productId, int quantity)
     {
-        int userId = GetCurrentCustomerId();
-        if (userId == 0) return;
-
         var cart = await _db.Carts
             .Include(c => c.CartItems)
-            .FirstOrDefaultAsync(c => c.CustomerId == userId);
+            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
         if (cart != null)
         {
@@ -130,25 +100,20 @@ public class CartService : ICartService
                 {
                     cartItem.Quantity = quantity;
                 }
+
                 await _db.SaveChangesAsync();
             }
         }
     }
 
-
-    public async Task<Dictionary<int, int>> GetCartContentsAsync()
+    public async Task<Dictionary<int, int>> GetCartContentsAsync(int customerId)
     {
-        int userId = GetCurrentCustomerId();
-        if (userId == 0) return new Dictionary<int, int>();
-
         var cart = await _db.Carts
             .Include(c => c.CartItems)
-            .FirstOrDefaultAsync(c => c.CustomerId == userId);
+            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
         if (cart == null)
-        {
             return new Dictionary<int, int>();
-        }
 
         return cart.CartItems.ToDictionary(i => i.ProductId, i => i.Quantity);
     }

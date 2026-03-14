@@ -18,7 +18,7 @@ namespace Shop.Services
 
         public async Task CreateOrderAsync(int customerId, CheckoutViewModel model)
         {
-            var cartItems = await _cartService.GetCartContentsAsync();
+            var cartItems = await _cartService.GetCartContentsAsync(customerId);
 
             if (cartItems == null || !cartItems.Any()) return;
 
