@@ -29,6 +29,23 @@ public partial class Category
         CategoryName = newName;
     }
 
-    public void MarkAsDeleted() => IsDeleted = true;
-    public void Restore() => IsDeleted = false;
+    public void MarkAsDeleted()
+    {
+        if (IsDeleted == true)
+        {
+            throw new DomainValidationException("Вказана категорія вже видалена.");
+        }
+
+        IsDeleted = true;
+    }
+
+    public void Restore()
+    {
+        if (IsDeleted == false)
+        {
+            throw new DomainValidationException("Вказана категорія не видалена.");
+        }
+
+        IsDeleted = false;
+    }
 }

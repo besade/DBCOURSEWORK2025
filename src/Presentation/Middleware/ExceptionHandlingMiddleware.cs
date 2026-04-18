@@ -1,4 +1,5 @@
-﻿using Shop.Domain.Exceptions;
+﻿using Shop.Application.Exceptions;
+using Shop.Domain.Exceptions;
 using System.Net;
 
 namespace Shop.Presentation.Middleware
@@ -19,8 +20,17 @@ namespace Shop.Presentation.Middleware
             {
                 await HandleExceptionAsync(context, ex.Message, HttpStatusCode.NotFound);
             }
+            catch (NotFoundException ex)
+            {
+                await HandleExceptionAsync(context, ex.Message, HttpStatusCode.NotFound);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                await HandleExceptionAsync(context, ex.Message, HttpStatusCode.BadRequest);
+            }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 await HandleExceptionAsync(context, "Внутрішня помилка сервера", HttpStatusCode.InternalServerError);
             }
         }

@@ -1,25 +1,29 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.Infrastructure.Data;
-using Shop.Application.Services;
 using Shop.Presentation.Middleware;
 using Shop.Infrastructure.Security;
 using Shop.Application.Interfaces;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using Shop.Presentation.Validation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Add services to the container.
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["jwt-token"];
+                return Task.CompletedTask;
+            }
+        };
+    });
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICartService, CartService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddFluentValidationAutoValidation();

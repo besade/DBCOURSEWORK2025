@@ -6,14 +6,10 @@ namespace Shop.Infrastructure.Data;
 
 public partial class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext()
-    {
-    }
+    public ApplicationDbContext() { }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Address> Addresses { get; set; }
 
@@ -48,7 +44,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("address");
 
             entity.Property(e => e.AddressId).HasColumnName("address_id");
-            entity.Property(e => e.AddressIsDefault).HasDefaultValue(false).HasColumnName("address_is_default");
+            entity.Property(e => e.IsDefault).HasDefaultValue(false).HasColumnName("is_default");
             entity.Property(e => e.AddressLine).HasMaxLength(400).HasColumnName("address_line");
             entity.Property(e => e.City).HasMaxLength(200).HasColumnName("city");
             entity.Property(e => e.Country).HasMaxLength(70).HasColumnName("country");

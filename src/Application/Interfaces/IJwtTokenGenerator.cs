@@ -1,9 +1,7 @@
-﻿using Shop.Domain.Models;
-
-namespace Shop.Application.Interfaces
+﻿namespace Shop.Application.Interfaces
 {
     public interface IJwtTokenGenerator
     {
-        public string GenerateToken(Customer user);
+        public string GenerateToken(int userId, string email, bool isAdmin);
     }
 }

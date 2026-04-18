@@ -98,6 +98,23 @@ public partial class Product
         Picture = picture;
     }
 
-    public void MarkAsDeleted() => IsDeleted = true;
-    public void Restore() => IsDeleted = false;
+    public void MarkAsDeleted()
+    {
+        if (IsDeleted == true)
+        {
+            throw new DomainValidationException("Вказаний товар вже видалений.");
+        }
+
+        IsDeleted = true;
+    }
+
+    public void Restore()
+    {
+        if (IsDeleted == false)
+        {
+            throw new DomainValidationException("Вказаний товар не видалений.");
+        }
+
+        IsDeleted = false;
+    }
 }

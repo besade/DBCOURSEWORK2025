@@ -9,7 +9,7 @@ public partial class Address
     public string Country { get; private set; } = null!;
     public string City { get; private set; } = null!;
     public string AddressLine { get; private set; } = null!;
-    public bool AddressIsDefault { get; private set; }
+    public bool IsDefault { get; private set; }
     public bool IsDeleted { get; private set; }
 
     public virtual Customer Customer { get; private set; } = null!;
@@ -25,7 +25,7 @@ public partial class Address
         UpdateDetails(country, city, addressLine);
 
         CustomerId = customerId;
-        AddressIsDefault = isDefault;
+        IsDefault = isDefault;
         IsDeleted = false;
     }
 
@@ -54,8 +54,40 @@ public partial class Address
         AddressLine = addressLine;
     }
 
-    public void SetAsDefault() => AddressIsDefault = true;
-    public void UnsetDefault() => AddressIsDefault = false;
-    public void MarkAsDeleted() => IsDeleted = true;
-    public void Restore() => IsDeleted = false;
+    public void SetAsDefault()
+    {
+        if (IsDefault == true)
+        {
+            throw new DomainValidationException("Вказана адреса вже вказана за замовчуванням.");
+        }
+
+        IsDefault = true;
+    }
+    public void UnsetDefault()
+    {
+        if (IsDefault == false)
+        {
+            throw new DomainValidationException("Вказана адреса не вказана за замовчуванням.");
+        }
+
+        IsDefault = false;
+    }
+    public void MarkAsDeleted()
+    {
+        if (IsDeleted == true)
+        {
+            throw new DomainValidationException("Вказана адреса вже видалена.");
+        }
+
+        IsDeleted = true;
+    }
+    public void Restore()
+    {
+        if (IsDeleted == false)
+        {
+            throw new DomainValidationException("Вказана адреса не видалена.");
+        }
+
+        IsDeleted = false;
+    }
 }

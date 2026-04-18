@@ -16,16 +16,17 @@ namespace Shop.Infrastructure.Security
             _config = config;
         }
 
-        public string GenerateToken(Customer user)
+        public string GenerateToken(int userId, string email, bool isAdmin)
         {
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.CustomerId.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
-            };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, isAdmin ? "Admin" : "User")
+                };
 
-            var jwtKey = _config["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is missing in configuration.");
+            var jwtKey = _config["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT Key is missing.");
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -34,7 +35,7 @@ namespace Shop.Infrastructure.Security
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.UtcNow.AddDays(7),
                 signingCredentials: creds
             );
 
