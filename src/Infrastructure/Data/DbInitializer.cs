@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shop.Domain.Interfaces.IFactories;
+using Shop.Domain.Interfaces.IRepositories;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,28 +8,24 @@ namespace Shop.Infrastructure.Data
 {
     public static class DbInitializer
     {
-        public static void SeedAdmin(ApplicationDbContext context)
+        public static async Task SeedAdminAsync(ICustomerRepository repository, ICustomerFactory factory)
         {
-            if (context.Customers.Any(c => c.IsAdmin))
+            if (await repository.AdminExistsAsync())
                 return;
 
-            using var hmac = new HMACSHA512();
-            var password = "12345678";
+            var admin = await factory.CreateAsync(
+                "Admin",
+                "System",
+                "admin@gmail.com",
+                "0000000000",
+                new DateOnly(2000, 1, 1),
+                "AdminPassword123"
+            );
 
-            var admin = new Customer
-            {
-                FirstName = "Admin",
-                LastName = "Admin",
-                Email = "admin@gmail.com",
-                PhoneNumber = "0000000000",
-                DateOfBirth = new DateOnly(2000, 1, 1),
-                IsAdmin = true,
-                PasswordSalt = hmac.Key,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password))
-            };
+            admin.MakeAdmin();
 
-            context.Customers.Add(admin);
-            context.SaveChanges();
+            await repository.AddAsync(admin);
+            await repository.SaveChangesAsync();
         }
     }
 }

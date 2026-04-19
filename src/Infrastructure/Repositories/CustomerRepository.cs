@@ -30,6 +30,11 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers.FirstOrDefaultAsync(c => c.PhoneNumber == phone, ct);
     }
 
+    public async Task<bool> AdminExistsAsync(CancellationToken ct = default)
+    {
+        return await _context.Customers.AnyAsync(c => c.IsAdmin, ct);
+    }
+
     public async Task AddAsync(Customer customer, CancellationToken ct = default)
     {
         await _context.Customers.AddAsync(customer, ct);

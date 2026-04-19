@@ -2,11 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Shop.Infrastructure.Data;
 using Shop.Presentation.Middleware;
 using Shop.Infrastructure.Security;
-using Shop.Application.Interfaces;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using Shop.Presentation.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Shop.Domain.Interfaces.IFactories;
+using Shop.Domain.Interfaces.IRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         };
     });
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
@@ -40,17 +40,23 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var services = scope.ServiceProvider;
+
+    var db = services.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
-    DbInitializer.SeedAdmin(db);
+
+    var customerRepo = services.GetRequiredService<ICustomerRepository>();
+    var customerFactory = services.GetRequiredService<ICustomerFactory>();
+
+    await DbInitializer.SeedAdminAsync(customerRepo, customerFactory);
 }
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

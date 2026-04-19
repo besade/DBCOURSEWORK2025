@@ -66,4 +66,14 @@ public partial class Customer
         PhoneNumber = phoneNumber;
         Email = email;
     }
+
+    public void MakeAdmin()
+    {
+        if(IsAdmin)
+        {
+            throw new DomainValidationException("Користувач і так має роль \"Admin\".");
+        }
+
+        IsAdmin = true;
+    }
 }

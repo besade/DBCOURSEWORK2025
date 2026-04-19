@@ -8,6 +8,7 @@ namespace Shop.Domain.Interfaces.IRepositories
         Task<Customer?> GetByIdAsync(int id, CancellationToken ct = default);
         Task<Customer?> GetByEmailAsync(Email email, CancellationToken ct = default);
         Task<Customer?> GetByPhoneAsync(PhoneNumber phone, CancellationToken ct = default);
+        Task<bool> AdminExistsAsync(CancellationToken ct = default);
         Task AddAsync(Customer customer, CancellationToken ct = default);
         void Update(Customer customer);
         Task SaveChangesAsync(CancellationToken ct = default);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shop.Application.Interfaces;
 using Shop.Application.IReadRepositories;
 using Shop.Domain.Factories;
 using Shop.Domain.Interfaces;
@@ -39,6 +40,7 @@ namespace Shop.Infrastructure.Security
             services.AddScoped<ICustomerFactory, CustomerFactory>();
             services.AddScoped<IOrderFactory, OrderFactory>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
             return services;
         }
