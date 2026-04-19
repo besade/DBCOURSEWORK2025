@@ -12,7 +12,7 @@
         public record CustomerSpendingResponseDto(string Email, int OrdersCount, decimal TotalSpent);
         public record PagedProductsListResponseDto(IEnumerable<PagedProductsResponseDto> Products, int TotalCount, int PageNumber);
         public record ProductsListResponseDto(IEnumerable<ProductShortResponseDto> Products);
-        public record ProductResponseDto(string ProductName, string ProductCountry, decimal Weight, decimal Price, byte[] Picture, string CategoryName);
+        public record ProductResponseDto(int ProductId, string ProductName, string ProductCountry, decimal Weight, decimal Price, byte[] Picture, string CategoryName);
         public record ProductShortResponseDto(int ProductId, string ProductName, decimal Price, byte[] Picture, string CategoryName);
         public record PagedProductsResponseDto(int Id, string Name, decimal Price, byte[] Picture);
         public record OrderItemResponseDto(int ProductId, string ProductName, decimal UnitPrice, int Quantity, decimal TotalPrice, byte[] Picture);

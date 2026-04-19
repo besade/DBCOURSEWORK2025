@@ -81,6 +81,7 @@ public partial class Address
 
         IsDeleted = true;
     }
+
     public void Restore()
     {
         if (IsDeleted == false)

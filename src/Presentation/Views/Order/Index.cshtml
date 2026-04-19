@@ -1,0 +1,67 @@
+﻿@model Shop.Application.DTOs.OrdersListResponseDto
+@{
+    ViewData["Title"] = "Мої замовлення";
+}
+
+<h3 class="mb-4">Мої замовлення</h3>
+
+@if (!Model.Orders.Any())
+{
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-bag-x display-3 d-block mb-3"></i>
+        Замовлень ще немає
+        <div class="mt-3">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">До товарів</a>
+        </div>
+    </div>
+}
+else
+{
+    @foreach (var order in Model.Orders)
+    {
+        var statusClass = order.Status switch
+        {
+            "Success" => "bg-success",
+            "Failed" => "bg-danger",
+            "Refunded" => "bg-warning text-dark",
+            _ => "bg-secondary"
+        };
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="fw-semibold">Замовлення №@order.OrderId</span>
+                    <span class="text-muted ms-2 small">@order.OrderDate.ToString("dd.MM.yyyy")</span>
+                </div>
+                <span class="badge @statusClass">@order.Status</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-geo-alt me-1"></i>@order.Country, @order.City — @order.AddressLine
+                    &nbsp;|&nbsp;
+                    <i class="bi bi-truck me-1"></i>@order.DeliveryType
+                    &nbsp;|&nbsp;
+                    <i class="bi bi-person me-1"></i>@order.RecipientFullName
+                </p>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    @foreach (var item in order.Items)
+                    {
+                        <div class="d-flex align-items-center gap-2 border rounded p-2">
+                            @if (item.Picture?.Length > 0)
+                            {
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Picture)"
+                                     width="40" height="40" class="rounded object-fit-cover" />
+                            }
+                            <div>
+                                <small class="d-block fw-semibold">@item.ProductName</small>
+                                <small class="text-muted">@item.Quantity шт. × @item.UnitPrice.ToString("N2") ₴</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="text-end fw-bold text-success">
+                    Разом: @order.TotalAmount.ToString("N2") ₴
+                </div>
+            </div>
+        </div>
+    }
+}

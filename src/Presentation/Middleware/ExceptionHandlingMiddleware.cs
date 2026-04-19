@@ -35,13 +35,25 @@ namespace Shop.Presentation.Middleware
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, string message, HttpStatusCode code)
+        private static async Task HandleExceptionAsync(HttpContext context, string message, HttpStatusCode code)
         {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)code;
+            bool isApiRequest = context.Request.Headers["Accept"].ToString().Contains("application/json") ||
+                                context.Request.Path.StartsWithSegments("/api");
 
-            var result = System.Text.Json.JsonSerializer.Serialize(new { error = message });
-            return context.Response.WriteAsync(result);
+            if (isApiRequest)
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)code;
+                var result = System.Text.Json.JsonSerializer.Serialize(new { error = message });
+                await context.Response.WriteAsync(result);
+            }
+            else
+            {
+                context.Response.StatusCode = (int)code;
+                context.Response.ContentType = "text/html; charset=utf-8";
+
+                context.Response.Redirect($"/Home/Error?message={Uri.EscapeDataString(message)}");
+            }
         }
     }
 }

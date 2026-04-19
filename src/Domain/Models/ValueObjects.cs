@@ -1,6 +1,5 @@
 ﻿using Shop.Domain.Exceptions;
 using System.Text.RegularExpressions;
-using static Shop.Domain.Models.ValueObjects;
 
 namespace Shop.Domain.Models
 {

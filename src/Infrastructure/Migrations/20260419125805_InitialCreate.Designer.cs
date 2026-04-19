@@ -9,11 +9,11 @@ using Shop.Infrastructure.Data;
 
 #nullable disable
 
-namespace Shop.Migrations
+namespace Shop.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251211215438_Initial")]
-    partial class Initial
+    [Migration("20260419125805_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,7 @@ namespace Shop.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "status", "status", new[] { "pending", "success", "failed", "refunded" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Shop.Models.Address", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Address", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -36,12 +36,6 @@ namespace Shop.Migrations
                         .HasColumnName("address_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AddressId"));
-
-                    b.Property<bool>("AddressIsDefault")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("address_is_default");
 
                     b.Property<string>("AddressLine")
                         .IsRequired()
@@ -65,7 +59,13 @@ namespace Shop.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("customer_id");
 
-                    b.Property<bool>("isDeleted")
+                    b.Property<bool>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_default");
+
+                    b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
@@ -79,7 +79,7 @@ namespace Shop.Migrations
                     b.ToTable("address", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.Cart", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Cart", b =>
                 {
                     b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
@@ -95,12 +95,13 @@ namespace Shop.Migrations
                     b.HasKey("CartId")
                         .HasName("cart_pkey");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("CustomerId")
+                        .IsUnique();
 
                     b.ToTable("cart", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.CartItem", b =>
+            modelBuilder.Entity("Shop.Domain.Models.CartItem", b =>
                 {
                     b.Property<int>("CartId")
                         .HasColumnType("integer")
@@ -119,10 +120,13 @@ namespace Shop.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("cart_item", (string)null);
+                    b.ToTable("cart_item", null, t =>
+                        {
+                            t.HasCheckConstraint("cart_item_quantity", "quantity > 0 AND quantity <= 99");
+                        });
                 });
 
-            modelBuilder.Entity("Shop.Models.Category", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -137,7 +141,7 @@ namespace Shop.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("category_name");
 
-                    b.Property<bool>("isDeleted")
+                    b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
@@ -149,7 +153,7 @@ namespace Shop.Migrations
                     b.ToTable("category", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.Customer", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
@@ -173,6 +177,12 @@ namespace Shop.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)")
                         .HasColumnName("first_name");
+
+                    b.Property<bool>("IsAdmin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_admin");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -208,7 +218,7 @@ namespace Shop.Migrations
                     b.ToTable("customer", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.Order", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
@@ -217,7 +227,7 @@ namespace Shop.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
 
-                    b.Property<int?>("AddressId")
+                    b.Property<int>("AddressId")
                         .HasColumnType("integer")
                         .HasColumnName("address_id");
 
@@ -232,7 +242,9 @@ namespace Shop.Migrations
                         .HasColumnName("customer_is_recipient");
 
                     b.Property<int>("Delivery")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("delivery_type");
 
                     b.Property<DateOnly>("OrderDate")
@@ -242,7 +254,9 @@ namespace Shop.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("OrderStatus")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("order_status");
 
                     b.Property<string>("RecipientFirstName")
@@ -267,7 +281,7 @@ namespace Shop.Migrations
                     b.ToTable("order_table", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.OrderItem", b =>
+            modelBuilder.Entity("Shop.Domain.Models.OrderItem", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("integer")
@@ -291,10 +305,13 @@ namespace Shop.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("order_item", (string)null);
+                    b.ToTable("order_item", null, t =>
+                        {
+                            t.HasCheckConstraint("order_item_quantity", "quantity > 0 AND quantity <= 99");
+                        });
                 });
 
-            modelBuilder.Entity("Shop.Models.Payment", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Payment", b =>
                 {
                     b.Property<int>("PaymentId")
                         .ValueGeneratedOnAdd()
@@ -317,7 +334,9 @@ namespace Shop.Migrations
                         .HasColumnName("payment_date");
 
                     b.Property<int>("PaymentStatus")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("payment_status");
 
                     b.Property<string>("TransactionId")
@@ -327,18 +346,21 @@ namespace Shop.Migrations
                         .HasColumnName("transaction_id");
 
                     b.Property<int>("Type")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("payment_type");
 
                     b.HasKey("PaymentId")
                         .HasName("payment_pkey");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.ToTable("payment", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.Product", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -350,6 +372,12 @@ namespace Shop.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer")
                         .HasColumnName("category_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
 
                     b.Property<byte[]>("Picture")
                         .IsRequired()
@@ -382,9 +410,6 @@ namespace Shop.Migrations
                         .HasColumnType("numeric(5,3)")
                         .HasColumnName("weight");
 
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
-
                     b.HasKey("ProductId")
                         .HasName("product_pkey");
 
@@ -393,7 +418,7 @@ namespace Shop.Migrations
                     b.ToTable("product", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.Review", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Review", b =>
                 {
                     b.Property<int>("ReviewId")
                         .ValueGeneratedOnAdd()
@@ -406,6 +431,12 @@ namespace Shop.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("customer_id");
 
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("integer")
                         .HasColumnName("product_id");
@@ -416,8 +447,8 @@ namespace Shop.Migrations
 
                     b.Property<string>("ReviewComment")
                         .IsRequired()
-                        .HasMaxLength(350)
-                        .HasColumnType("character varying(350)")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)")
                         .HasColumnName("review_comment");
 
                     b.Property<DateOnly>("ReviewDate")
@@ -425,12 +456,6 @@ namespace Shop.Migrations
                         .HasColumnType("date")
                         .HasColumnName("review_date")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<bool>("isDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_deleted");
 
                     b.HasKey("ReviewId")
                         .HasName("review_pkey");
@@ -442,9 +467,9 @@ namespace Shop.Migrations
                     b.ToTable("review", (string)null);
                 });
 
-            modelBuilder.Entity("Shop.Models.Address", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Address", b =>
                 {
-                    b.HasOne("Shop.Models.Customer", "Customer")
+                    b.HasOne("Shop.Domain.Models.Customer", "Customer")
                         .WithMany("Addresses")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -454,11 +479,11 @@ namespace Shop.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Shop.Models.Cart", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Cart", b =>
                 {
-                    b.HasOne("Shop.Models.Customer", "Customer")
-                        .WithMany("Carts")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("Shop.Domain.Models.Customer", "Customer")
+                        .WithOne("Cart")
+                        .HasForeignKey("Shop.Domain.Models.Cart", "CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("cart_customer_id_fkey");
@@ -466,16 +491,16 @@ namespace Shop.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Shop.Models.CartItem", b =>
+            modelBuilder.Entity("Shop.Domain.Models.CartItem", b =>
                 {
-                    b.HasOne("Shop.Models.Cart", "Cart")
+                    b.HasOne("Shop.Domain.Models.Cart", "Cart")
                         .WithMany("CartItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("cart_item_cart_id_fkey");
 
-                    b.HasOne("Shop.Models.Product", "Product")
+                    b.HasOne("Shop.Domain.Models.Product", "Product")
                         .WithMany("CartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -487,15 +512,16 @@ namespace Shop.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Shop.Models.Order", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Order", b =>
                 {
-                    b.HasOne("Shop.Models.Address", "Address")
+                    b.HasOne("Shop.Domain.Models.Address", "Address")
                         .WithMany("Orders")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
                         .HasConstraintName("order_table_address_id_fkey");
 
-                    b.HasOne("Shop.Models.Customer", "Customer")
+                    b.HasOne("Shop.Domain.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -507,32 +533,32 @@ namespace Shop.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Shop.Models.OrderItem", b =>
+            modelBuilder.Entity("Shop.Domain.Models.OrderItem", b =>
                 {
-                    b.HasOne("Shop.Models.Order", "Orders")
+                    b.HasOne("Shop.Domain.Models.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("order_item_order_id_fkey");
 
-                    b.HasOne("Shop.Models.Product", "Product")
+                    b.HasOne("Shop.Domain.Models.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("order_item_product_id_fkey");
 
-                    b.Navigation("Orders");
+                    b.Navigation("Order");
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Shop.Models.Payment", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Payment", b =>
                 {
-                    b.HasOne("Shop.Models.Order", "Order")
-                        .WithMany("Payments")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("Shop.Domain.Models.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("Shop.Domain.Models.Payment", "OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("payment_order_id_fkey");
@@ -540,9 +566,9 @@ namespace Shop.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Shop.Models.Product", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Product", b =>
                 {
-                    b.HasOne("Shop.Models.Category", "Category")
+                    b.HasOne("Shop.Domain.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -552,16 +578,16 @@ namespace Shop.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Shop.Models.Review", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Review", b =>
                 {
-                    b.HasOne("Shop.Models.Customer", "Customer")
+                    b.HasOne("Shop.Domain.Models.Customer", "Customer")
                         .WithMany("Reviews")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("review_customer_id_fkey");
 
-                    b.HasOne("Shop.Models.Product", "Product")
+                    b.HasOne("Shop.Domain.Models.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -573,40 +599,42 @@ namespace Shop.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Shop.Models.Address", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Address", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Shop.Models.Cart", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Cart", b =>
                 {
                     b.Navigation("CartItems");
                 });
 
-            modelBuilder.Entity("Shop.Models.Category", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Shop.Models.Customer", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Customer", b =>
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("Carts");
+                    b.Navigation("Cart")
+                        .IsRequired();
 
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("Shop.Models.Order", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("Payments");
+                    b.Navigation("Payment")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Shop.Models.Product", b =>
+            modelBuilder.Entity("Shop.Domain.Models.Product", b =>
                 {
                     b.Navigation("CartItems");
 

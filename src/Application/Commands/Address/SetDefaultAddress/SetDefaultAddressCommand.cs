@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Shop.Presentation.RequestDTOs;
 
 namespace Shop.Application.Commands.Address.SetDefaultAddress
 {

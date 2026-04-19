@@ -6,7 +6,6 @@ namespace Shop.Domain.Interfaces.IRepositories
     {
         Task<Product?> GetByIdAsync(int id, CancellationToken ct = default);
         Task AddAsync(Product product, CancellationToken ct = default);
-        void Update(Product product);
         Task SaveChangesAsync(CancellationToken ct = default);
     }
 }

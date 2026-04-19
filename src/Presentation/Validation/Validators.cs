@@ -81,11 +81,18 @@ namespace Shop.Presentation.Validation
         public OrderRequestValidator()
         {
             RuleFor(x => x.AddressId).GreaterThan(0);
-            When(x => !x.CustomerIsRecipient, () => {
-                RuleFor(x => x.RecipientFirstName).NotEmpty().MaximumLength(25);
-                RuleFor(x => x.RecipientLastName).NotEmpty().MaximumLength(25);
+
+            Unless(x => x.CustomerIsRecipient, () => {
+                RuleFor(x => x.RecipientFirstName)
+                    .NotEmpty().WithMessage("Вкажіть ім'я отримувача.")
+                    .MaximumLength(25);
+                RuleFor(x => x.RecipientLastName)
+                    .NotEmpty().WithMessage("Вкажіть прізвище отримувача.")
+                    .MaximumLength(25);
             });
+
             RuleFor(x => x.Delivery).NotEmpty();
+            RuleFor(x => x.Delivery).IsInEnum().WithMessage("Виберіть службу доставки");
         }
     }
 }

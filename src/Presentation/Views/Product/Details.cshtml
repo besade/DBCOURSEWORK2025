@@ -1,0 +1,46 @@
+﻿@model Shop.Application.DTOs.ProductResponseDto
+@{
+    ViewData["Title"] = Model.ProductName;
+}
+
+<div class="row g-4">
+    <div class="col-md-5">
+        @if (Model.Picture?.Length > 0)
+        {
+            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Picture)"
+                 class="img-fluid rounded-3 shadow-sm w-100" style="max-height:400px;object-fit:cover;" />
+        }
+    </div>
+    <div class="col-md-7">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Товари</a></li>
+                <li class="breadcrumb-item text-muted">@Model.CategoryName</li>
+                <li class="breadcrumb-item active">@Model.ProductName</li>
+            </ol>
+        </nav>
+        <h2 class="mb-1">@Model.ProductName</h2>
+        <p class="text-muted mb-3">@Model.CategoryName</p>
+        <p class="fs-2 fw-bold text-success mb-4">@Model.Price.ToString("N2") ₴</p>
+        <ul class="list-unstyled text-muted small mb-4">
+            <li><i class="bi bi-geo me-2"></i>Країна: @Model.ProductCountry</li>
+            <li><i class="bi bi-speedometer2 me-2"></i>Вага: @Model.Weight кг</li>
+        </ul>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form asp-controller="Cart" asp-action="Add" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="productId" value="@Model.ProductId" />
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-cart-plus me-2"></i>Додати до кошика
+                </button>
+            </form>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg">
+                Увійдіть, щоб купити
+            </a>
+        }
+    </div>
+</div>

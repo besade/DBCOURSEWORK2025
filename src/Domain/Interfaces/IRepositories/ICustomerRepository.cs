@@ -10,7 +10,6 @@ namespace Shop.Domain.Interfaces.IRepositories
         Task<Customer?> GetByPhoneAsync(PhoneNumber phone, CancellationToken ct = default);
         Task<bool> AdminExistsAsync(CancellationToken ct = default);
         Task AddAsync(Customer customer, CancellationToken ct = default);
-        void Update(Customer customer);
         Task SaveChangesAsync(CancellationToken ct = default);
     }
 }

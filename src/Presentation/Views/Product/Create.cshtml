@@ -1,0 +1,59 @@
+﻿@model ProductFormViewModel
+@{ ViewData["Title"] = "Новий товар"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-semibold">Додати товар</div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Назва товару</label>
+                            <input name="ProductName" class="form-control" value="@Model.ProductName" required maxlength="200" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Країна виробник</label>
+                            <input name="ProductCountry" class="form-control" value="@Model.ProductCountry" required maxlength="70" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Вага (кг)</label>
+                            <input name="Weight" type="number" step="0.001" class="form-control" value="@Model.Weight" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ціна (₴)</label>
+                            <input name="Price" type="number" step="0.01" class="form-control" value="@Model.Price" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Кількість на складі</label>
+                            <input name="StockQuantity" type="number" class="form-control" value="@Model.StockQuantity" required min="0" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Категорія</label>
+                            <select name="CategoryId" class="form-select" required>
+                                <option value="">— Оберіть категорію —</option>
+                                @foreach (var cat in Model.Categories!.Categories)
+                                {
+                                    <option value="@cat.CategoryId" selected="@(Model.CategoryId == cat.CategoryId)">
+                                        @cat.CategoryName
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Фото товару</label>
+                            <input name="Picture" type="file" class="form-control" accept="image/*" required />
+                        </div>
+                        <div class="col-12 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-floppy me-1"></i>Зберегти
+                            </button>
+                            <a asp-action="Manage" class="btn btn-outline-secondary">Скасувати</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

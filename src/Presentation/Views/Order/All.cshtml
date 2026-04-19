@@ -1,0 +1,61 @@
+﻿@model Shop.Application.DTOs.OrdersListResponseDto
+@{ ViewData["Title"] = "Усі замовлення"; }
+
+<h3 class="mb-4">Усі замовлення</h3>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>№</th>
+                    <th>Дата</th>
+                    <th>Отримувач</th>
+                    <th>Адреса</th>
+                    <th>Доставка</th>
+                    <th>Сума</th>
+                    <th>Статус</th>
+                    <th>Змінити статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td class="align-middle">#@order.OrderId</td>
+                        <td class="align-middle">@order.OrderDate.ToString("dd.MM.yy")</td>
+                        <td class="align-middle">@order.RecipientFullName</td>
+                        <td class="align-middle small text-muted">@order.City, @order.AddressLine</td>
+                        <td class="align-middle">@order.DeliveryType</td>
+                        <td class="align-middle fw-semibold">@order.TotalAmount.ToString("N2") ₴</td>
+                        <td class="align-middle">
+                            @{
+                                var cls = order.Status switch
+                                {
+                                    "Success" => "bg-success",
+                                    "Failed" => "bg-danger",
+                                    "Refunded" => "bg-warning text-dark",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @cls">@order.Status</span>
+                        </td>
+                        <td class="align-middle">
+                            <form asp-action="UpdateStatus" method="post" class="d-flex gap-1">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@order.OrderId" />
+                                <select name="newStatus" class="form-select form-select-sm" style="width:auto">
+                                    @foreach (var s in Enum.GetValues<Shop.Domain.Models.Status>())
+                                    {
+                                        <option value="@s" selected="@(order.Status == s.ToString())">@s</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm">OK</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

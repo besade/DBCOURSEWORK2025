@@ -1,0 +1,60 @@
+﻿@model Shop.Presentation.RequestDTOs.CustomerRegisterRequestDto
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="card-title text-center mb-4">Створення акаунту</h4>
+                <form asp-action="Register" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label asp-for="FirstName" class="form-label">Ім'я</label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-6">
+                            <label asp-for="LastName" class="form-label">Прізвище</label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" type="email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="PhoneNumber" class="form-label">Телефон</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="+380XXXXXXXXX" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="DateOfBirth" class="form-label">Дата народження</label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Password" class="form-label">Пароль</label>
+                            <input asp-for="Password" type="password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">Зареєструватись</button>
+                        </div>
+                    </div>
+                </form>
+                <hr />
+                <p class="text-center mb-0 text-muted">
+                    Вже є акаунт? <a asp-action="Login">Увійти</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+ }

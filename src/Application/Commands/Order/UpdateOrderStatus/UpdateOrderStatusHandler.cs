@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Shop.Application.Exceptions;
-using Shop.Domain.Interfaces.IFactories;
 using Shop.Domain.Interfaces.IRepositories;
 
 namespace Shop.Application.Commands.Order.UpdateOrderStatus

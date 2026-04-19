@@ -1,0 +1,64 @@
+﻿@model CategoryManageViewModel
+@{
+    ViewData["Title"] = "Категорії";
+}
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-semibold">Нова категорія</div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="input-group">
+                        <input name="CategoryName" class="form-control" placeholder="Назва категорії"
+                               maxlength="30" required />
+                        <button type="submit" class="btn btn-primary">Додати</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-semibold">Список категорій</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var cat in Model.Categories.Categories)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">
+                            @cat.CategoryName
+                            <small class="text-muted">#@cat.CategoryId</small>
+                        </span>
+                        <div class="d-flex gap-2 align-items-center">
+                            <form asp-action="UpdateName" method="post" class="d-flex gap-1">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@cat.CategoryId" />
+                                <input name="newName" class="form-control form-control-sm"
+                                       value="@cat.CategoryName" style="width:140px" maxlength="30" />
+                                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            </form>
+                            <form asp-action="Delete" method="post"
+                                  onsubmit="return confirm('Видалити категорію «@cat.CategoryName»?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@cat.CategoryId" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            <form asp-action="Restore" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@cat.CategoryId" />
+                                <button type="submit" class="btn btn-outline-success btn-sm" title="Відновити">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

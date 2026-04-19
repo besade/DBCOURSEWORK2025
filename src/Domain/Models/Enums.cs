@@ -10,9 +10,9 @@ public enum Status
 
 public enum DeliveryType
 {
-    NovaPoshta,
-    UkrPoshta,
-    Meest
+    NovaPoshta = 1,
+    UkrPoshta = 2,
+    Meest = 3
 }
 
 public enum PaymentType

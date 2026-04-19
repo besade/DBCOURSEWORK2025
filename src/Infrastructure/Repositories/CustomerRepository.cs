@@ -40,11 +40,6 @@ public class CustomerRepository : ICustomerRepository
         await _context.Customers.AddAsync(customer, ct);
     }
 
-    public void Update(Customer customer)
-    {
-        _context.Customers.Update(customer);
-    }
-
     public async Task SaveChangesAsync(CancellationToken ct = default)
     {
         await _context.SaveChangesAsync(ct);

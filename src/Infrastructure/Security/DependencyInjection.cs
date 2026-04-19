@@ -16,7 +16,8 @@ namespace Shop.Infrastructure.Security
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+        );
 
             // Repositories
             services.AddScoped<IAddressRepository, AddressRepository>();

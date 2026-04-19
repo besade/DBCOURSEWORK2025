@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Shop.Migrations
+namespace Shop.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,7 +43,8 @@ namespace Shop.Migrations
                     email = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
                     password_hash = table.Column<byte[]>(type: "bytea", nullable: false),
-                    password_salt = table.Column<byte[]>(type: "bytea", nullable: false)
+                    password_salt = table.Column<byte[]>(type: "bytea", nullable: false),
+                    is_admin = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -62,7 +63,7 @@ namespace Shop.Migrations
                     weight = table.Column<decimal>(type: "numeric(5,3)", precision: 5, scale: 3, nullable: false),
                     stock_quantity = table.Column<int>(type: "integer", nullable: false),
                     price = table.Column<decimal>(type: "numeric(8,2)", precision: 8, scale: 2, nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     picture = table.Column<byte[]>(type: "bytea", nullable: false)
                 },
                 constraints: table =>
@@ -86,7 +87,7 @@ namespace Shop.Migrations
                     country = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     city = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     address_line = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
-                    address_is_default = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    is_default = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -127,7 +128,7 @@ namespace Shop.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     customer_id = table.Column<int>(type: "integer", nullable: false),
                     product_id = table.Column<int>(type: "integer", nullable: false),
-                    review_comment = table.Column<string>(type: "character varying(350)", maxLength: 350, nullable: false),
+                    review_comment = table.Column<string>(type: "character varying(600)", maxLength: 600, nullable: false),
                     rating = table.Column<int>(type: "integer", nullable: false),
                     review_date = table.Column<DateOnly>(type: "date", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
@@ -156,13 +157,13 @@ namespace Shop.Migrations
                     order_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     customer_id = table.Column<int>(type: "integer", nullable: false),
-                    address_id = table.Column<int>(type: "integer", nullable: true),
+                    address_id = table.Column<int>(type: "integer", nullable: false),
                     recipient_first_name = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     recipient_last_name = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     customer_is_recipient = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     order_date = table.Column<DateOnly>(type: "date", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    order_status = table.Column<int>(type: "integer", nullable: false),
-                    delivery_type = table.Column<int>(type: "integer", nullable: false)
+                    order_status = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    delivery_type = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -192,6 +193,7 @@ namespace Shop.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("cart_item_pkey", x => new { x.cart_id, x.product_id });
+                    table.CheckConstraint("cart_item_quantity", "quantity > 0 AND quantity <= 99");
                     table.ForeignKey(
                         name: "cart_item_cart_id_fkey",
                         column: x => x.cart_id,
@@ -218,6 +220,7 @@ namespace Shop.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("order_item_pkey", x => new { x.order_id, x.product_id });
+                    table.CheckConstraint("order_item_quantity", "quantity > 0 AND quantity <= 99");
                     table.ForeignKey(
                         name: "order_item_order_id_fkey",
                         column: x => x.order_id,
@@ -242,8 +245,8 @@ namespace Shop.Migrations
                     payment_date = table.Column<DateOnly>(type: "date", nullable: false),
                     amount = table.Column<decimal>(type: "numeric(9,2)", precision: 9, scale: 2, nullable: false),
                     transaction_id = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
-                    payment_status = table.Column<int>(type: "integer", nullable: false),
-                    payment_type = table.Column<int>(type: "integer", nullable: false)
+                    payment_status = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    payment_type = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -264,7 +267,8 @@ namespace Shop.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_cart_customer_id",
                 table: "cart",
-                column: "customer_id");
+                column: "customer_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_cart_item_product_id",
@@ -301,7 +305,8 @@ namespace Shop.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_payment_order_id",
                 table: "payment",
-                column: "order_id");
+                column: "order_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_product_category_id",

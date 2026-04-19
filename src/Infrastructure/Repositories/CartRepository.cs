@@ -22,11 +22,6 @@ namespace Shop.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.CustomerId == customerId, ct);
         }
 
-        public void Update(Cart cart)
-        {
-            _context.Carts.Update(cart);
-        }
-
         public async Task SaveChangesAsync(CancellationToken ct = default)
         {
             await _context.SaveChangesAsync(ct);

@@ -2,7 +2,6 @@
 using Shop.Application.Exceptions;
 using Shop.Domain.Interfaces.IFactories;
 using Shop.Domain.Interfaces.IRepositories;
-using Shop.Domain.Models;
 
 namespace Shop.Application.Commands.Order.CreateOrder
 {
@@ -40,7 +39,6 @@ namespace Shop.Application.Commands.Order.CreateOrder
                     throw new NotFoundException(nameof(Product), item.ProductId);
 
                 product.UpdateStock(product.StockQuantity - item.Quantity);
-                _productRepository.Update(product);
             }
 
             await _orderRepository.AddAsync(order, ct);

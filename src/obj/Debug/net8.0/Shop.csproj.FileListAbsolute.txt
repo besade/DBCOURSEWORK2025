@@ -118,6 +118,7 @@ D:\KPI2YEAR\COURSEWORK\src\obj\Debug\net8.0\Shop.genruntimeconfig.cache
 D:\KPI2YEAR\COURSEWORK\src\obj\Debug\net8.0\ref\Shop.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\appsettings.Development.json
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\appsettings.json
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Presentation\Properties\launchSettings.json
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Shop.staticwebassets.runtime.json
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Shop.staticwebassets.endpoints.json
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Shop.exe
@@ -125,7 +126,12 @@ D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Shop.deps.json
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Shop.runtimeconfig.json
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Shop.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Shop.pdb
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\FluentValidation.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Humanizer.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\MediatR.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\MediatR.Contracts.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -137,7 +143,9 @@ D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.EntityFrameworkC
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
@@ -153,6 +161,7 @@ D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\System.Composition.Convent
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\System.Composition.Hosting.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\System.Composition.Runtime.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\System.Composition.TypedParts.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
@@ -211,11 +220,12 @@ D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.GeneratedMSBuildEdito
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.AssemblyInfoInputs.cache
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.AssemblyInfo.cs
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.csproj.CoreCompileInputs.cache
+D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.MvcApplicationPartsAssemblyInfo.cs
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.MvcApplicationPartsAssemblyInfo.cache
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.RazorAssemblyInfo.cache
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.RazorAssemblyInfo.cs
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.sourcelink.json
-D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\scopedcss\Presentation\Views\Shared\_Layout.cshtml.rz.scp.css
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\scopedcss\bundle\Shop.styles.css
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\scopedcss\projectbundle\Shop.bundle.scp.css
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\staticwebassets.build.json
@@ -227,6 +237,7 @@ D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\staticwebassets\msbuild.bu
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Shop.props
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Shop.props
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\staticwebassets.pack.json
+D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.csproj.Up2Date
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\refint\Shop.dll

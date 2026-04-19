@@ -1,8 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shop.Domain.Interfaces.IFactories;
+﻿using Shop.Domain.Interfaces.IFactories;
 using Shop.Domain.Interfaces.IRepositories;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Shop.Infrastructure.Data
 {
@@ -17,7 +14,7 @@ namespace Shop.Infrastructure.Data
                 "Admin",
                 "System",
                 "admin@gmail.com",
-                "0000000000",
+                "+380999999999",
                 new DateOnly(2000, 1, 1),
                 "AdminPassword123"
             );

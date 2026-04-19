@@ -1,0 +1,92 @@
+﻿@model OrderCreateViewModel
+@{
+    ViewData["Title"] = "Оформлення замовлення";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-semibold">Оформити замовлення</div>
+            <div class="card-body p-4">
+                @if (Model.Addresses?.Addresses.Any() != true)
+                {
+                    <div class="alert alert-warning">
+                        Щоб оформити замовлення, спочатку
+                        <a asp-controller="Address" asp-action="Index">додайте адресу доставки</a>.
+                    </div>
+                }
+                else
+                {
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Адреса доставки</label>
+                            @foreach (var addr in Model.Addresses.Addresses)
+                            {
+                                <div class="form-check border rounded p-3 mb-2">
+                                    <input type="radio" name="AddressId" value="@addr.Id"
+                                           class="form-check-input"
+                                           id="addr_@addr.Id"
+                                    @(addr.IsDefault ? "checked" : "") required />
+                                    <label class="form-check-label" for="addr_@addr.Id">
+                                        <span class="fw-semibold">@addr.Country, @addr.City</span><br />
+                                        <small class="text-muted">@addr.AddressLine</small>
+                                        @if (addr.IsDefault)
+                                        {
+                                            <span class="badge bg-success ms-2">За замовч.</span>
+                                        }
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Служба доставки</label>
+                            <div class="mb-3">
+                                <select name="Delivery" class="form-select" required>
+                                    <option value="">Оберіть службу...</option>
+                                    <option value="NovaPoshta" selected="@(Model.Dto?.Delivery.ToString() == "NovaPoshta")">Нова Пошта</option>
+                                    <option value="UkrPoshta" selected="@(Model.Dto?.Delivery.ToString() == "UkrPoshta")">Укрпошта</option>
+                                    <option value="Meest" selected="@(Model.Dto?.Delivery.ToString() == "Meest")">Meest</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="CustomerIsRecipient" value="true"
+                                   class="form-check-input" id="isRecipient"
+                                   checked
+                                   onchange="toggleRecipient(this)" />
+                            <input type="hidden" name="CustomerIsRecipient" value="false" />
+                            <label class="form-check-label" for="isRecipient">Я є отримувачем</label>
+                        </div>
+                        <div id="recipientFields" class="d-none">
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">Ім'я отримувача</label>
+                                    <input name="RecipientFirstName" class="form-control" maxlength="25" />
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Прізвище отримувача</label>
+                                    <input name="RecipientLastName" class="form-control" maxlength="25" />
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-bag-check me-1"></i>Підтвердити замовлення
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleRecipient(cb) {
+            document.getElementById('recipientFields').classList.toggle('d-none', cb.checked);
+        }
+    </script>
+}

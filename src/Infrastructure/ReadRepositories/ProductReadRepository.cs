@@ -20,6 +20,7 @@ namespace Shop.Infrastructure.Queries
                 .AsNoTracking()
                 .Where(p => p.ProductId == productId)
                 .Select(p => new ProductResponseDto(
+                    p.ProductId,
                     p.ProductName,
                     p.ProductCountry,
                     p.Weight,

@@ -27,11 +27,6 @@ namespace Shop.Infrastructure.Repositories
             await _context.Orders.AddAsync(order, ct);
         }
 
-        public void Update(Order order)
-        {
-            _context.Orders.Update(order);
-        }
-
         public async Task SaveChangesAsync(CancellationToken ct)
         {
             await _context.SaveChangesAsync(ct);

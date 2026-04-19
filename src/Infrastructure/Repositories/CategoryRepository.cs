@@ -29,11 +29,6 @@ namespace Shop.Infrastructure.Repositories
             await _context.Categories.AddAsync(category, ct);
         }
 
-        public void Update(Category category)
-        {
-            _context.Categories.Update(category);
-        }
-
         public async Task SaveChangesAsync(CancellationToken ct = default)
         {
             await _context.SaveChangesAsync(ct);

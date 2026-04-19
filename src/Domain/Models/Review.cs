@@ -48,6 +48,13 @@ public partial class Review
         Rating = rating;
     }
 
-    public void MarkAsDeleted() => IsDeleted = true;
-    public void Restore() => IsDeleted = false;
+    public void MarkAsDeleted()
+    {
+        if (IsDeleted == true)
+        {
+            throw new DomainValidationException("Вказаний відгук вже видалений.");
+        }
+
+        IsDeleted = true;
+    }
 }

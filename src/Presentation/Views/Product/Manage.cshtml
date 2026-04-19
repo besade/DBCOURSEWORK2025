@@ -1,0 +1,66 @@
+﻿@model Shop.Application.DTOs.ProductsListResponseDto
+@{
+    ViewData["Title"] = "Управління товарами";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Товари</h3>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Додати товар
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Фото</th>
+                    <th>Назва</th>
+                    <th>Категорія</th>
+                    <th>Ціна</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Products)
+                {
+                    <tr>
+                        <td class="align-middle text-muted">#@p.ProductId</td>
+                        <td class="align-middle">
+                            @if (p.Picture?.Length > 0)
+                            {
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(p.Picture)"
+                                     width="50" height="50" class="rounded object-fit-cover" />
+                            }
+                        </td>
+                        <td class="align-middle fw-semibold">@p.ProductName</td>
+                        <td class="align-middle"><span class="badge bg-secondary">@p.CategoryName</span></td>
+                        <td class="align-middle">@p.Price.ToString("N2") ₴</td>
+                        <td class="align-middle text-end">
+                            <a asp-action="Edit" asp-route-id="@p.ProductId" class="btn btn-outline-secondary btn-sm me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form asp-action="Delete" method="post" class="d-inline"
+                                  onsubmit="return confirm('Видалити товар «@p.ProductName»?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@p.ProductId" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            <form asp-action="Restore" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@p.ProductId" />
+                                <button type="submit" class="btn btn-outline-success btn-sm ms-1" title="Відновити">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

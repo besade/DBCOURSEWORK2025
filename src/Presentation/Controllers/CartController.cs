@@ -1,79 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Interfaces;
-using System;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Shop.Application.Commands.Cart.AddItem;
+using Shop.Application.Commands.Cart.DecreaseCartItemQuantity;
+using Shop.Application.Commands.Cart.IncreaseCartItemQuantity;
+using Shop.Application.Commands.Cart.RemoveItemFromCart;
+using Shop.Application.Commands.Cart.UpdateCartItemQuantity;
+using Shop.Application.Queries.Cart.GetCartContent;
+using System.Security.Claims;
+namespace Shop.Presentation.Controllers;
 
+[Authorize]
 public class CartController : Controller
 {
-    private readonly ICartService _cartService;
+    private readonly IMediator _mediator;
+    public CartController(IMediator mediator) => _mediator = mediator;
 
-    public CartController(ICartService cartService)
-    {
-        _cartService = cartService;
-    }
-
-    private int GetCurrentCustomerId()
-    {
-        var userIdString = Request.Cookies["userId"];
-
-        if (int.TryParse(userIdString, out int userId))
-            return userId;
-
-        return 0;
-    }
-
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
-        int userId = GetCurrentCustomerId();
-        if (userId == 0) return RedirectToAction("Login", "Auth");
-
-        var cart = await _cartService.GetCartAsync(userId);
+        var cart = await _mediator.Send(new GetCartContentQuery(GetCurrentUserId()));
         return View(cart);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> AddToCart(int id, int quantity = 1, string? returnUrl = null)
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Add(int productId)
     {
-        int userId = GetCurrentCustomerId();
-
-        if (userId == 0)
-            return RedirectToAction("Login", "Auth", new { returnUrl });
-
-        if (id > 0 && quantity > 0)
-        {
-            await _cartService.AddItemAsync(userId, id, quantity);
-        }
-
-        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-        {
-            return Redirect(returnUrl);
-        }
-
+        await _mediator.Send(new AddItemToCartCommand(GetCurrentUserId(), productId));
+        TempData["Success"] = "Товар додано до кошика.";
         return RedirectToAction("Index", "Home");
     }
 
-    [HttpPost]
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Remove(int productId)
+    {
+        await _mediator.Send(new RemoveItemFromCartCommand(GetCurrentUserId(), productId));
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Increase(int productId)
+    {
+        await _mediator.Send(new IncreaseCartItemQuantityCommand(GetCurrentUserId(), productId));
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Decrease(int productId)
+    {
+        await _mediator.Send(new DecreaseCartItemQuantityCommand(GetCurrentUserId(), productId));
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateQuantity(int productId, int quantity)
     {
-        int userId = GetCurrentCustomerId();
-
-        if (productId > 0)
-        {
-            await _cartService.UpdateQuantityAsync(userId, productId, quantity);
-        }
-
-        return RedirectToAction(nameof(Index));
+        await _mediator.Send(new UpdateCartItemQuantityCommand(GetCurrentUserId(), productId, quantity));
+        return RedirectToAction("Index");
     }
 
-    [HttpPost]
-    public async Task<IActionResult> RemoveFromCart(int productId)
-    {
-        int userId = GetCurrentCustomerId();
-
-        if (productId > 0)
-        {
-            await _cartService.RemoveItemAsync(userId, productId);
-        }
-
-        return RedirectToAction(nameof(Index));
-    }
+    private int GetCurrentUserId() =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 }
