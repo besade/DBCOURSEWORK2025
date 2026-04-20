@@ -73,7 +73,11 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
 
     var db = services.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+
+    if (!app.Environment.IsEnvironment("Testing"))
+    {
+        db.Database.Migrate();
+    }
 
     var customerRepo = services.GetRequiredService<ICustomerRepository>();
     var customerFactory = services.GetRequiredService<ICustomerFactory>();
@@ -102,3 +106,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+public partial class Program { }
