@@ -2,7 +2,7 @@
 
 WORKDIR /app
 
-COPY src/ .
+COPY . .
 
 RUN dotnet restore Shop.sln
 
