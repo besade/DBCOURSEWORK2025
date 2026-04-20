@@ -18,6 +18,9 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=Sweet_Shop;Username=postgres;Password=12345
       - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__Key=супер_секретний_ключ_мінімум_32_символи
+      - Jwt__Issuer=ShopApp
+      - Jwt__Audience=ShopUsers
       
     restart: on-failure
     
