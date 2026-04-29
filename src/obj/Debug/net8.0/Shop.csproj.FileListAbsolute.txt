@@ -244,3 +244,4 @@ D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\refint\Shop.dll
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.pdb
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\Shop.genruntimeconfig.cache
 D:\KPI2YEAR\1Semester\COURSEWORK\src\obj\Debug\net8.0\ref\Shop.dll
+D:\KPI2YEAR\1Semester\COURSEWORK\src\bin\Debug\net8.0\RabbitMQ.Client.dll

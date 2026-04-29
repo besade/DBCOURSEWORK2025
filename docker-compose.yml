@@ -12,6 +12,8 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
     command: /bin/bash -c "dotnet Shop.dll"
       
@@ -21,6 +23,7 @@ services:
       - Jwt__Key=супер_секретний_ключ_мінімум_32_символи
       - Jwt__Issuer=ShopApp
       - Jwt__Audience=ShopUsers
+      - RabbitMQ__Host=rabbitmq
       
     restart: on-failure
     
@@ -42,6 +45,22 @@ services:
       retries: 10  
       start_period: 10s 
       
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     restart: always
 
 volumes:

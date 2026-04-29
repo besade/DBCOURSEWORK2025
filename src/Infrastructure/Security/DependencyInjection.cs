@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
+using Shop.Application.Events;
 using Shop.Application.Interfaces;
 using Shop.Application.IReadRepositories;
 using Shop.Domain.Factories;
@@ -6,6 +8,9 @@ using Shop.Domain.Interfaces;
 using Shop.Domain.Interfaces.IFactories;
 using Shop.Domain.Interfaces.IRepositories;
 using Shop.Infrastructure.Data;
+using Shop.Infrastructure.EventBus;
+using Shop.Infrastructure.EventBus.Subscribers;
+using Shop.Infrastructure.Notifications;
 using Shop.Infrastructure.Queries;
 using Shop.Infrastructure.Repositories;
 
@@ -42,6 +47,18 @@ namespace Shop.Infrastructure.Security
             services.AddScoped<IOrderFactory, OrderFactory>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<INotificationSender, ConsoleNotificationSender>();
+
+            services.AddSingleton<IConnection>(_ =>
+            RabbitMqConnectionFactory.CreateConnection(configuration));
+
+            services.AddSingleton<IEventBus, RabbitMqEventBus>();
+
+            services.AddScoped<IEventHandler<OrderCreatedEvent>, OrderCreatedEventHandler>();
+            services.AddScoped<IEventHandler<OrderStatusChangedEvent>, OrderStatusChangedEventHandler>();
+            services.AddScoped<IEventHandler<LowStockDetectedEvent>, LowStockDetectedEventHandler>();
+
+            services.AddHostedService<RabbitMqConsumerService>();
 
             return services;
         }

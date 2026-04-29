@@ -11,12 +11,15 @@ namespace Shop.Application.Commands.Account.Register
         private readonly ICustomerRepository _customerRepository;
         private readonly ICustomerFactory _customerFactory;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly INotificationSender _notificationSender;
 
-        public RegisterCommandHandler(ICustomerRepository customerRepository, ICustomerFactory customerFactory, IJwtTokenGenerator jwtTokenGenerator)
+        public RegisterCommandHandler(ICustomerRepository customerRepository, ICustomerFactory customerFactory, 
+            IJwtTokenGenerator jwtTokenGenerator, INotificationSender notificationSender)
         {
             _customerRepository = customerRepository;
             _customerFactory = customerFactory;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _notificationSender = notificationSender;
         }
 
         public async Task<AuthResponseDto> Handle(RegisterCommand command, CancellationToken ct)
@@ -27,6 +30,8 @@ namespace Shop.Application.Commands.Account.Register
 
             await _customerRepository.AddAsync(customer, ct);
             await _customerRepository.SaveChangesAsync(ct);
+
+            await _notificationSender.SendWelcomeMessageAsync(customer.Email.ToString(), customer.FirstName);
 
             var token = _jwtTokenGenerator.GenerateToken(customer.CustomerId, customer.Email.ToString(), customer.IsAdmin);
 
